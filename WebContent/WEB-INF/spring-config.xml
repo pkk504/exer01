@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+<bean id="handlerMapping" 
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
+	<!-- controller registration  -->
+	<context:component-scan base-package="controllers"/>	
+	<!-- 
+		<bean id="indexController" class="controllers.IndexController"/>
+		이 Controller가 scan 대상에 포함이기 때문에 따로 등록안해도 된다.
+	-->
+	<!-- viewResolver configuration -->
+	
+	<!-- HandlerMapping = RequestMappingHandlerMapping (default)
+	 ViewResolver = InternalResourceViewResolver (default) 둘다 디폴트값이라 사용하려면 굳이 등록 안해도됨.-->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<property name="suffix" value=".jsp"/>
+		<property name="prefix" value="/WEB-INF/views"/>
+	</bean>
+	
+	<bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="url" value="jdbc:oracle:thin:@54.180.8.152:1521:xe"/>
+		<property name="username" value="dev"/>
+		<property name="password" value="alcls504"/>
+		
+	</bean>
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="ds"/>
+		<property name="mapperLocations" value="/WEB-INF/mappers/*.xml"/>
+	</bean>
+	
+	<bean id="sqlTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		
+	</bean>
+	
+	<bean id="MovieDao" class="models.MovieDao"/>
+		
+</beans>
